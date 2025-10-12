@@ -69,7 +69,7 @@
             };
 
             scripts = {
-              run-ide.exec = "pycharm-professional > /dev/null 2>&1 &";
+              run-ide.exec = "pycharm-professional . > /dev/null 2>&1 &";
 
               format.exec = ''
                 isort src/
