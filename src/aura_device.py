@@ -67,11 +67,11 @@ class USBDeviceConnection:
 
         try:
             self.device.set_configuration(1)
-            logger.info("Set device configuration")
+            logger.debug("Set device configuration")
         except USBError as e:
             logger.error("Could not set configuration: %s", e)
 
-        logger.info("Device opened successfully: Bus %s, Address %s", self.device.bus, self.device.address)
+        logger.debug("Device opened successfully: Bus %s, Address %s", self.device.bus, self.device.address)
 
     def close(self) -> None:
         if not self.device:
@@ -84,7 +84,7 @@ class USBDeviceConnection:
 
         self.device = None
         self.interface = None
-        logger.info("Device closed successfully")
+        logger.debug("Device closed successfully")
 
     def is_open(self) -> bool:
         return self.device is not None
