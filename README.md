@@ -1,6 +1,6 @@
 # my-pc-rgb
 
-A unified RGB controller for PC components not supported by OpenRGB.
+A unified RGB controller for my PC.
 
 ## Background
 
@@ -13,9 +13,9 @@ This project addresses the limitations of OpenRGB with certain hardware:
 Currently integrated:
 - ASUS ROG Ryujin III EXTREME ARGB
 - ENE DDR5
+- Corsair Lighting Node Core
 
 **Planned:**
-- Corsair Lighting Node Core
 - ASUS GeForce RTX 5090 ROG Astral OC
 
 ## Features
@@ -28,8 +28,8 @@ Currently integrated:
 
 1. ✅ ASUS cooler support
 2. ✅ ENE DDR5 integration
-3. ⏳ Corsair Lighting Node Core integration (in progress)
-4. 📋 GPU support
+3. ✅ Corsair Lighting Node Core integration
+4. ⏳ GPU support
 5. 📋 Contribute improvements back to OpenRGB
 
 ## Future Plans
