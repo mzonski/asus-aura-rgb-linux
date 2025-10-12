@@ -1,5 +1,5 @@
 {
-  description = "ASUS Aura RGB Controler reversing";
+  description = "My PC RGB";
 
   inputs = {
     devenv-root = {
@@ -38,20 +38,23 @@
           system,
           ...
         }:
+        let
+          defaultPackages = with pkgs; [
+            python313
+            libusb1
+            hidapi
+          ];
+          python = pkgs.python313;
+        in
         {
           devenv.shells.default = {
-            name = "asus-aura-rgb-linux";
+            name = "my-pc-rgb";
 
-            packages = with pkgs; [
-              python313
-              libusb1
-              hidapi
-              i2c-tools
-            ];
+            packages = defaultPackages ++ (with pkgs; [ i2c-tools ]);
 
             languages.python = {
               enable = true;
-              package = pkgs.python313;
+              package = python;
               venv.enable = true;
               venv.requirements = ''
                 pyusb>=1.3.1
@@ -67,10 +70,6 @@
 
             scripts = {
               run-ide.exec = "pycharm-professional > /dev/null 2>&1 &";
-              
-              led-set.exec = ''
-                python src/main.py "$@"
-              '';
 
               format.exec = ''
                 isort src/
@@ -86,6 +85,51 @@
             processes = {
               main.exec = "python src/main.py";
             };
+          };
+
+          packages.default = python.pkgs.buildPythonApplication {
+            pname = "my-pc-rgb";
+            version = "0.1.0";
+            pyproject = false;
+
+            src = ./.;
+
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+
+            propagatedBuildInputs =
+              defaultPackages
+              ++ (with python.pkgs; [
+                pyusb
+                hid
+              ])
+              ++ [
+                (python.pkgs.buildPythonPackage rec {
+                  pname = "smbus3";
+                  version = "0.5.5";
+                  pyproject = true;
+
+                  build-system = with python.pkgs; [
+                    setuptools
+                  ];
+
+                  src = pkgs.fetchPypi {
+                    inherit pname version;
+                    hash = "sha256-ke7Tj7a30viT+/w/NwBqpB5pE/3aWzqaeSOLNTdg+S4=";
+                  };
+                  doCheck = false;
+                })
+              ];
+
+            installPhase = ''
+              mkdir -p $out/share/my-pc-rgb
+              cp -r src/* $out/share/my-pc-rgb/
+            '';
+
+            postFixup = ''
+              makeWrapper ${python}/bin/python $out/bin/my-pc-rgb \
+                --add-flags "$out/share/my-pc-rgb/main.py" \
+                --prefix PYTHONPATH : "$out/share/my-pc-rgb:$PYTHONPATH"
+            '';
           };
 
         };
