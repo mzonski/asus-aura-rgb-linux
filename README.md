@@ -1,15 +1,41 @@
-# asus-aura-rgb-linux
+# my-pc-rgb
 
-A reverse engineering project focused on understanding the ASUS Aura RGB protocol, specifically targeting Gen 2 addressable headers. While OpenRGB currently supports Gen 1 addressable headers, Gen 2 implementation is nowhere to be seen.
+A unified RGB controller for PC components not supported by OpenRGB.
 
-This is primarily a personal research project, but insights and findings are welcome. Feel free to open issues or discussions if you have relevant information about the Aura RGB Gen 2 protocol.
+## Background
 
-**Important:** Do not open issues about device compatibility or functionality ("it doesn't work on my computer"). Channel configurations are hardcoded for research purposes - this is not production-ready software.
+This project addresses the limitations of OpenRGB with certain hardware:
 
-Useful contributions include protocol documentation, packet captures, and technical analysis. **PRs with code are very welcome.**
+- **ASUS Aura RGB Gen 2** devices (like the ASUS ROG Ryujin III EXTREME ARGB) are not supported by OpenRGB
+
+## Supported Hardware
+
+Currently integrated:
+- ASUS ROG Ryujin III EXTREME ARGB
+- ENE DDR5
+
+**Planned:**
+- Corsair Lighting Node Core
+- ASUS GeForce RTX 5090 ROG Astral OC
 
 ## Features
 
-1. Toggle on/off AURA RGB devices
-2. Set direct mode color
+- **Toggle Control** - Turn RGB devices on/off
+- **Direct Color Mode** - Set custom colors for each device
+- **Unified Interface** - Control all components from one application
 
+## Roadmap
+
+1. ✅ ASUS cooler support
+2. ✅ ENE DDR5 integration
+3. ⏳ Corsair Lighting Node Core integration (in progress)
+4. 📋 GPU support
+5. 📋 Contribute improvements back to OpenRGB
+
+## Future Plans
+
+Once all personal hardware is fully supported, the goal is to contribute this functionality to the OpenRGB project for broader community benefit.
+
+---
+
+*Note: This is a personal project developed to solve specific hardware compatibility issues.*

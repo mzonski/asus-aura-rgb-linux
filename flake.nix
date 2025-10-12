@@ -46,6 +46,7 @@
               python313
               libusb1
               hidapi
+              i2c-tools
             ];
 
             languages.python = {
@@ -55,6 +56,7 @@
               venv.requirements = ''
                 pyusb>=1.3.1
                 hid>=1.0.8
+                smbus3>=0.5.5
 
                 black>=25.9.0
                 isort>=6.0.1

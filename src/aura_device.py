@@ -137,8 +137,8 @@ class AsusAuraLedDevice:
                 data_or_wLength=data,
                 timeout=self.DEFAULT_TIMEOUT,
             )
-
-            time.sleep(1.0 if self._throttle else 0.001)
+            if self._throttle:
+                time.sleep(1.0)
             return read_bytes
 
         except USBTimeoutError:

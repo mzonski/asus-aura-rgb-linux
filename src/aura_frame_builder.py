@@ -1,7 +1,7 @@
 from enum import IntEnum
-from typing import Optional, TypeAlias
+from typing import Optional
 
-RGBColor: TypeAlias = tuple[int, int, int]
+from utils import RGBColor
 
 
 def frame_to_hex_string(array: bytes):
