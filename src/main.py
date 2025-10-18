@@ -2,6 +2,7 @@ import atexit
 import logging
 import signal
 import sys
+
 from aura_device import AsusAuraLedDevice
 from corsair_lighting_node import CorsairLightingNodeController
 from ene_dram import RAMSyncLEDController
@@ -60,7 +61,7 @@ class SyncedRGBController:
             signal.pause()
 
         except Exception as e:
-            logger.error(f"Error in main loop: {e}")
+            logger.error("Error in main loop: %s", e)
             raise
 
     def stop(self) -> None:
@@ -96,7 +97,7 @@ def main():
     except KeyboardInterrupt:
         logger.info("Keyboard interrupt received")
     except Exception as e:
-        logger.error(f"Fatal error: {e}")
+        logger.error("Fatal error: %s", e)
 
 
 if __name__ == "__main__":
