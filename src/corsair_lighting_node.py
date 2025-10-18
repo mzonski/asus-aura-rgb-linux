@@ -36,7 +36,7 @@ class CorsairLightingNodeController:
     WRITE_PACKET_SIZE = 65
     READ_PACKET_SIZE = 17
     READ_TIMEOUT = 15
-    LED_COUNT = 24
+    LED_COUNT = 4 * 8
     CHANNEL = 0
 
     def __init__(self) -> None:
