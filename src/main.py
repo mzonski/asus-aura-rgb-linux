@@ -5,15 +5,31 @@ import sys
 
 from aura_device import AsusAuraLedDevice
 from corsair_lighting_node import CorsairLightingNodeController
-from ene_dram import RAMSyncLEDController
-from utils import RGBColor
+from ene_sync_controller import ENESyncController
+from utils import RGBColor, DEFAULT_COLOR
 
 logger = logging.getLogger(__name__)
+
+from device_config import (
+    RAM_BUS_NUMBER,
+    RAM_DEVICE_NAME,
+    RAM1_BUS_ADDRESS,
+    RAM2_BUS_ADDRESS,
+    GPU_BUS_NUMBER,
+    GPU_BUS_ADDRESS,
+    GPU_DEVICE_NAME,
+)
 
 
 class SyncedRGBController:
     def __init__(self):
-        self.ram_controller = RAMSyncLEDController()
+        self.ene_controller = ENESyncController(
+            [
+                (RAM_BUS_NUMBER, RAM1_BUS_ADDRESS, RAM_DEVICE_NAME),
+                (RAM_BUS_NUMBER, RAM2_BUS_ADDRESS, RAM_DEVICE_NAME),
+                (GPU_BUS_NUMBER, GPU_BUS_ADDRESS, GPU_DEVICE_NAME),
+            ]
+        )
         self.corsair_controller = CorsairLightingNodeController()
         self.aura_device = AsusAuraLedDevice()
         self.running = False
@@ -27,19 +43,19 @@ class SyncedRGBController:
     def disconnect(self) -> None:
         self.aura_device.disconnect()
         self.corsair_controller.disconnect()
-        self.ram_controller.close()
+        self.ene_controller.close()
         logger.info("All devices disconnected")
 
     def set_color(self, color: RGBColor) -> None:
         [r, g, b] = color
         logger.info("Setting synced color: RGB(%s, %s, %s)", r, g, b)
-        self.ram_controller.set_color(color)
+        self.ene_controller.set_color(color)
         self.corsair_controller.set_color(color)
         self.aura_device.set_direct_single_color(color)
 
     def turn_on(self) -> None:
         logger.info("Turning on all RGB")
-        self.ram_controller.turn_on()
+        self.ene_controller.turn_on()
         self.corsair_controller.turn_on()
         self.aura_device.turn_on()
 
@@ -47,15 +63,14 @@ class SyncedRGBController:
         logger.info("Turning off all RGB")
         self.aura_device.turn_off()
         self.corsair_controller.turn_off()
-        self.ram_controller.turn_off()
-        self.ram_controller.save_state()
+        self.ene_controller.turn_off()
 
     def run(self) -> None:
         self.running = True
         try:
             self.connect()
             self.turn_on()
-            self.set_color((15, 0, 0))
+            self.set_color(DEFAULT_COLOR)
             logger.info("RGB Controller service running")
 
             signal.pause()

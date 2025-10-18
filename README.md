@@ -29,8 +29,9 @@ Currently integrated:
 1. ✅ ASUS cooler support
 2. ✅ ENE DDR5 integration
 3. ✅ Corsair Lighting Node Core integration
-4. ⏳ GPU support
-5. 📋 Contribute improvements back to OpenRGB
+4. ✅ GPU support
+5. ⏳ Solve ASUS Aura Gen 2 protocol completely
+6. 📋 Contribute improvements back to OpenRGB
 
 ## Future Plans
 
