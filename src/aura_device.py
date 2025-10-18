@@ -7,7 +7,7 @@ from usb.core import find as find_device
 from usb.util import dispose_resources
 
 from aura_frame_builder import AuraFrameBuilder, AuraMode, RGBColor
-from aura_utils import CommandData, format_hex, normalize_command_data
+from utils import CommandData, format_hex, normalize_command_data
 
 fb = AuraFrameBuilder()
 logger = logging.getLogger(__name__)
