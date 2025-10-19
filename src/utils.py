@@ -1,21 +1,30 @@
-from typing import TypeAlias
+from typing import TypeAlias, List
 import logging
 
 RGBColor: TypeAlias = tuple[int, int, int]
 DEFAULT_COLOR: RGBColor = (15, 0, 0)
 DISABLED_COLOR: RGBColor = (0, 0, 0)
 
-CommandData: TypeAlias = str | bytes | bytearray
+CommandData: TypeAlias = str | bytes | bytearray | List[int]
 logger = logging.getLogger(__name__)
 
 
-def normalize_command_data(command_data: CommandData, packet_size: int) -> bytes:
-    if isinstance(command_data, str):
-        data = bytes.fromhex(command_data.replace(" ", ""))
-    elif isinstance(command_data, (bytes, bytearray)):
-        data = bytes(command_data)
+def _convert_to_bytes(data: CommandData) -> bytes:
+    if isinstance(data, str):
+        return bytes.fromhex(data.replace(" ", ""))
+    elif isinstance(data, (bytes, bytearray)):
+        return bytes(data)
+    elif isinstance(data, list):
+        return bytes(data)
     else:
-        raise ValueError(f"Unsupported data type: {type(command_data)}")
+        raise ValueError(f"Unsupported data type: {type(data)}")
+
+
+def normalize_command_data(command_data: CommandData, packet_size: int, prefix: CommandData | None = None) -> bytes:
+    data = _convert_to_bytes(command_data)
+
+    if prefix is not None:
+        data = _convert_to_bytes(prefix) + data
 
     if len(data) < packet_size:
         data = data + b"\x00" * (packet_size - len(data))
