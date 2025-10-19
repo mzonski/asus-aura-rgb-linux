@@ -50,7 +50,15 @@
           devenv.shells.default = {
             name = "my-pc-rgb";
 
-            packages = defaultPackages ++ (with pkgs; [ i2c-tools ]);
+            packages =
+              defaultPackages
+              ++ (with pkgs; [
+                i2c-tools
+                usbutils
+                tcpdump
+                wireshark
+                tshark
+              ]);
 
             languages.python = {
               enable = true;
@@ -68,19 +76,55 @@
               '';
             };
 
-            scripts = {
-              run-ide.exec = "pycharm-professional . > /dev/null 2>&1 &";
+            scripts =
+              let
+                requireRoot = ''[ "$EUID" -ne 0 ] && echo "Error: This script must be run as root" >&2 && exit 1'';
+              in
+              {
+                run-ide.exec = "pycharm-professional . > /dev/null 2>&1 &";
 
-              format.exec = ''
-                isort src/
-                black src/
-              '';
+                format.exec = ''
+                  isort src/
+                  black src/
+                '';
 
-              lint.exec = ''
-                mypy src/
-                pylint src/**/*.py
-              '';
-            };
+                lint.exec = ''
+                  mypy src/
+                  pylint src/**/*.py
+                '';
+
+                monitor-init.exec = ''
+                  ${requireRoot}
+                  sudo modprobe usbmon
+                  lsusb
+                '';
+
+                monitor-start.exec = ''
+                  ${requireRoot}
+                  interface="usbmon0"
+
+                  if [ $# -gt 0 ]; then
+                    if [[ "$1" =~ ^[0-9]+$ ]]; then
+                      interface="usbmon$1"
+                    else
+                      echo "Error: Unsupported argument '$1'" >&2
+                      echo "Usage: $0 [bus_number]" >&2
+                      exit 1
+                    fi
+                  fi
+
+                  mkdir -p .captures
+                  output_file=".captures/$(date +%Y%m%d-%H%M%S)-$interface.pcap"
+
+                  echo "Starting USB capture on $interface to $output_file"
+                  tcpdump -i "$interface" -w "$output_file"
+                '';
+
+                monitor-live.exec = ''
+                  ${requireRoot}
+                  sudo -E wireshark
+                '';
+              };
 
             processes = {
               main.exec = "python src/main.py";
